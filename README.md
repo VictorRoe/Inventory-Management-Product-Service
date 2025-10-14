@@ -1,47 +1,108 @@
-# Proyecto Base Implementando Clean Architecture
+[![Forks][forks-shield]][forks-url]
+[![Stargazers][stars-shield]][stars-url]
+[![Issues][issues-shield]][issues-url]
+[![LinkedIn][linkedin-shield]][linkedin-url]
 
-## Antes de Iniciar
+<!-- PROJECT LOGO -->
+<br />
+<div align="center">
+  <h3 align="center">Gestor de Inventario — Microservicio de Productos</h3>
 
-Empezaremos por explicar los diferentes componentes del proyectos y partiremos de los componentes externos, continuando con los componentes core de negocio (dominio) y por último el inicio y configuración de la aplicación.
+  <p align="center">
+    Microservicio responsable de la gestión de productos dentro del sistema de Inventario Empresarial.
+    <br />
+    <a href="https://github.com/VictorRoe/Inventory-Management-Product-Service"><strong>Explorar documentación »</strong></a>
+    <br />
+    <br />
+    <a href="https://github.com/VictorRoe/Inventory-Management-Product-Service/issues/new?labels=bug&template=bug-report---.md">Reportar Bug</a>
+    &middot;
+    <a href="https://github.com/VictorRoe/Inventory-Management-Product-Service/issues/new?labels=enhancement&template=feature-request---.md">Solicitar Feature</a>
+  </p>
+</div>
 
-Lee el artículo [Clean Architecture — Aislando los detalles](https://medium.com/bancolombia-tech/clean-architecture-aislando-los-detalles-4f9530f35d7a)
+---
 
-# Arquitectura
+## 📦 Acerca del Proyecto
 
-![Clean Architecture](https://miro.medium.com/max/1400/1*ZdlHz8B0-qu9Y-QO3AXR_w.png)
+El **Servicio de Productos** es un microservicio diseñado para gestionar toda la información relacionada con los productos del inventario, como sus categorías, marcas, existencias, unidades de medida y transacciones (ventas, compras, devoluciones).
 
-## Domain
+Este servicio forma parte del **Sistema de Gestión de Inventarios**, una solución basada en **microservicios** construida con **Java 21, Spring Boot WebFlux y Angular**, desplegada en **AWS**.
 
-Es el módulo más interno de la arquitectura, pertenece a la capa del dominio y encapsula la lógica y reglas del negocio mediante modelos y entidades del dominio.
+### 🎯 Objetivos del Microservicio
 
-## Usecases
+- Gestionar los productos del inventario (CRUD).
+- Administrar categorías, marcas y unidades de medida.
+- Controlar existencias y movimientos de stock.
+- Registrar ventas y compras de productos.
+- Controlar devoluciones de productos.
+- Emitir notificaciones o eventos hacia otros microservicios a través de **AWS SQS**.
+- Monitorear rendimiento y errores con **New Relic**.
+- Mantener un código limpio y seguro supervisado por **SonarQube**.
 
-Este módulo gradle perteneciente a la capa del dominio, implementa los casos de uso del sistema, define lógica de aplicación y reacciona a las invocaciones desde el módulo de entry points, orquestando los flujos hacia el módulo de entities.
+---
 
-## Infrastructure
+## ⚙️ Arquitectura General
 
-### Helpers
+Este proyecto sigue una arquitectura **basada en microservicios** bajo principios de **Clean Architecture** y **Domain-Driven Design (DDD)**.
 
-En el apartado de helpers tendremos utilidades generales para los Driven Adapters y Entry Points.
+### 🧩 Stack Tecnológico
 
-Estas utilidades no están arraigadas a objetos concretos, se realiza el uso de generics para modelar comportamientos
-genéricos de los diferentes objetos de persistencia que puedan existir, este tipo de implementaciones se realizan
-basadas en el patrón de diseño [Unit of Work y Repository](https://medium.com/@krzychukosobudzki/repository-design-pattern-bc490b256006)
+- **Java 21**
+- **Spring Boot 3 + WebFlux (reactivo)**
+- **AWS SQS** (mensajería asíncrona)
+- **PostgreSQL**
+- **Docker** (contenedorización)
+- **New Relic** (observabilidad)
+- **SonarQube** (calidad del código)
+- **Angular** (front-end del ecosistema)
 
-Estas clases no puede existir solas y debe heredarse su compartimiento en los **Driven Adapters**
+---
 
-### Driven Adapters
+## 🚀 Getting Started
 
-Los driven adapter representan implementaciones externas a nuestro sistema, como lo son conexiones a servicios rest,
-soap, bases de datos, lectura de archivos planos, y en concreto cualquier origen y fuente de datos con la que debamos
-interactuar.
+### ✅ Prerrequisitos
 
-### Entry Points
+Asegúrate de tener instaladas las siguientes herramientas:
 
-Los entry points representan los puntos de entrada de la aplicación o el inicio de los flujos de negocio.
+- **Java 21**
+- **Maven 3.9+**
+- **Docker**
+- **Node.js 18+**
+- **SonarQube (plugin en tu IDE)**
+- **Cuenta AWS (para SQS y despliegue opcional)**
 
-## Application
+### 🔧 Instalación y Ejecución Local
 
-Este módulo es el más externo de la arquitectura, es el encargado de ensamblar los distintos módulos, resolver las dependencias y crear los beans de los casos de use (UseCases) de forma automática, inyectando en éstos instancias concretas de las dependencias declaradas. Además inicia la aplicación (es el único módulo del proyecto donde encontraremos la función “public static void main(String[] args)”.
+1. Clona el repositorio:
 
-**Los beans de los casos de uso se disponibilizan automaticamente gracias a un '@ComponentScan' ubicado en esta capa.**
+   ```bash
+   git clone https://github.com/VictorRoe/Inventory-Management-Product-Service.git
+   cd Inventory-Management-Product-Service
+
+
+<!-- MARKDOWN LINKS & IMAGES -->
+<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+[forks-shield]: https://img.shields.io/github/forks/othneildrew/Best-README-Template.svg?style=for-the-badge
+[forks-url]: https://github.com/VictorRoe/Inventory-Management-Product-Service/network/members
+[stars-shield]: https://img.shields.io/github/stars/othneildrew/Best-README-Template.svg?style=for-the-badge
+[stars-url]: https://github.com/VictorRoe/Inventory-Management-Product-Service/stargazers
+[issues-shield]: https://img.shields.io/github/issues/othneildrew/Best-README-Template.svg?style=for-the-badge
+[issues-url]: https://github.com/VictorRoe/Inventory-Management-Product-Service/issues
+[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
+[linkedin-url]: https://linkedin.com/in/victorrangele
+[Next.js]: https://img.shields.io/badge/next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white
+[Next-url]: https://nextjs.org/
+[React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
+[React-url]: https://reactjs.org/
+[Vue.js]: https://img.shields.io/badge/Vue.js-35495E?style=for-the-badge&logo=vuedotjs&logoColor=4FC08D
+[Vue-url]: https://vuejs.org/
+[Angular.io]: https://img.shields.io/badge/Angular-DD0031?style=for-the-badge&logo=angular&logoColor=white
+[Angular-url]: https://angular.io/
+[Svelte.dev]: https://img.shields.io/badge/Svelte-4A4A55?style=for-the-badge&logo=svelte&logoColor=FF3E00
+[Svelte-url]: https://svelte.dev/
+[Laravel.com]: https://img.shields.io/badge/Laravel-FF2D20?style=for-the-badge&logo=laravel&logoColor=white
+[Laravel-url]: https://laravel.com
+[Bootstrap.com]: https://img.shields.io/badge/Bootstrap-563D7C?style=for-the-badge&logo=bootstrap&logoColor=white
+[Bootstrap-url]: https://getbootstrap.com
+[JQuery.com]: https://img.shields.io/badge/jQuery-0769AD?style=for-the-badge&logo=jquery&logoColor=white
+[JQuery-url]: https://jquery.com 
