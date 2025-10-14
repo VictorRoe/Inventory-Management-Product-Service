@@ -6,12 +6,12 @@ import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;
 
 @RequiredArgsConstructor
-public class ProductUseCase {
+public class ProductUseCase implements IProductUseCase {
 
     private final ProductRepository productRepository;
 
-    Mono<Product> create(Product product){
+    @Override
+    public Mono<Product> create(Product product) {
         return productRepository.create(product);
     }
-
 }
