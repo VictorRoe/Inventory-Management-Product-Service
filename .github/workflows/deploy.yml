@@ -1,0 +1,10 @@
+on:
+  push:
+    branches:
+      - v1.0.0
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: dump
+        run: echo "[EN DESARROLLO]"
