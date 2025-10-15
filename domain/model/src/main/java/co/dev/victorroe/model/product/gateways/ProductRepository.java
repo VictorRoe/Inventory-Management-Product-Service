@@ -7,6 +7,8 @@ public interface ProductRepository {
 
     Mono<Product> create(Product product);
 
+    Mono<Product> findById(Long id);
+
 
 
 }

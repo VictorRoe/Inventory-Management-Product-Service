@@ -6,4 +6,6 @@ import reactor.core.publisher.Mono;
 public interface IProductUseCase {
 
     Mono<Product> create (Product product);
+
+    Mono<Product> findById(Long id);
 }
