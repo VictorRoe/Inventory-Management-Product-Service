@@ -1,4 +1,5 @@
 package co.dev.victorroe.model.product;
+import co.dev.victorroe.model.category.Category;
 import lombok.Builder;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,4 +21,5 @@ public class Product {
     private BigDecimal price;
     private Long stock;
     private String sku;
+    private Category category;
 }
