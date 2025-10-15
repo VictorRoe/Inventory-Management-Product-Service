@@ -1,7 +1,5 @@
 package co.dev.victorroe.r2dbc.entity;
 
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
@@ -17,7 +15,6 @@ import java.math.BigDecimal;
 public class ProductEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column("name")
     private String name;
@@ -29,5 +26,7 @@ public class ProductEntity {
     private Long stock;
     @Column("sku")
     private String sku;
+    @Column("category_id")
+    private Long categoryId;
 
 }
