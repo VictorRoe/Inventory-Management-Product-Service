@@ -5,6 +5,6 @@ import org.springframework.data.repository.query.ReactiveQueryByExampleExecutor;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 
 
-public interface ProductReactiveRepository extends ReactiveCrudRepository<ProductEntity, String>, ReactiveQueryByExampleExecutor<ProductEntity> {
+public interface ProductReactiveRepository extends ReactiveCrudRepository<ProductEntity, Long>, ReactiveQueryByExampleExecutor<ProductEntity> {
 
 }

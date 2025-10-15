@@ -7,6 +7,7 @@ public record RequestProductDTO(
         String description,
         BigDecimal price,
         Long stock,
-        String sku
+        String sku,
+        Long category_id
 ) {
 }

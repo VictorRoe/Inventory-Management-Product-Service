@@ -42,4 +42,18 @@ public class Handler {
                 );
 
     }
+
+    public Mono<ServerResponse> findProductById(ServerRequest serverRequest) {
+        Long id = Long.parseLong(serverRequest.pathVariable("id"));
+        return productUseCase.findById(id)
+                .doOnNext(product -> log.info("[findProductById] Producto encontrado: {}", product))
+                .map(mapper::toResponse)
+                .flatMap(dto -> ServerResponse.ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .bodyValue(dto))
+                .switchIfEmpty(ServerResponse.notFound().build())
+                .onErrorResume(error -> ServerResponse.badRequest()
+                        .contentType(MediaType.APPLICATION_JSON).build())
+                .doOnError(err -> log.error("Producto no encontrado: {} ", err.getMessage()));
+    }
 }
