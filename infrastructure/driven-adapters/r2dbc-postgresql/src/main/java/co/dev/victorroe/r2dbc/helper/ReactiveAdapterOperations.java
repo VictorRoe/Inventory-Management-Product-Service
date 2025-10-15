@@ -1,6 +1,5 @@
 package co.dev.victorroe.r2dbc.helper;
 
-import org.reactivecommons.utils.ObjectMapper;
 import org.springframework.data.domain.Example;
 import org.springframework.data.repository.query.ReactiveQueryByExampleExecutor;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
@@ -12,21 +11,18 @@ import java.util.function.Function;
 
 public abstract class ReactiveAdapterOperations<E, D, I, R extends ReactiveCrudRepository<D, I> & ReactiveQueryByExampleExecutor<D>> {
     protected R repository;
-    protected ObjectMapper mapper;
-    private final Class<D> dataClass;
+    private final Function<E, D> toDataFn;
     private final Function<D, E> toEntityFn;
 
     @SuppressWarnings("unchecked")
-    protected ReactiveAdapterOperations(R repository, ObjectMapper mapper, Function<D, E> toEntityFn) {
+    protected ReactiveAdapterOperations(R repository, Function<E, D> toDataFn, Function<D, E> toEntityFn) {
         this.repository = repository;
-        this.mapper = mapper;
-        ParameterizedType genericSuperclass = (ParameterizedType) this.getClass().getGenericSuperclass();
-        this.dataClass = (Class<D>) genericSuperclass.getActualTypeArguments()[1];
+        this.toDataFn = toDataFn;
         this.toEntityFn = toEntityFn;
     }
 
     protected D toData(E entity) {
-        return mapper.map(entity, dataClass);
+        return toDataFn.apply(entity);
     }
 
     protected E toEntity(D data) {
