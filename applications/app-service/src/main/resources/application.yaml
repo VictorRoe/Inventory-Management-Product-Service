@@ -20,8 +20,17 @@ management:
     health:
       probes:
         enabled: true
+adapters:
+  r2dbc:
+    host: ${DB_HOST}
+    port: 5432
+    database: ${DB_NAME}
+    schema: ${DB_SCHEMA}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
 cors:
   allowed-origins: "http://localhost:4200,http://localhost:8080"
+
 logging:
   level:
     root: INFO
