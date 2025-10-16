@@ -1,14 +1,8 @@
-package co.dev.victorroe.model.product.gateways;
+package co.dev.victorroe.usecase.product;
 
 import co.dev.victorroe.model.product.Product;
 import reactor.core.publisher.Mono;
 
-public interface ProductRepository {
-
+public interface ICreateProductUseCase {
     Mono<Product> create(Product product);
-
-    Mono<Product> findById(Long id);
-
-
-
 }
