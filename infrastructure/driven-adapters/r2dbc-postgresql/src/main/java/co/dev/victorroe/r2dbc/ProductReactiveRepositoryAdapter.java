@@ -6,7 +6,6 @@ import co.dev.victorroe.r2dbc.entity.ProductEntity;
 import co.dev.victorroe.r2dbc.helper.ReactiveAdapterOperations;
 import co.dev.victorroe.r2dbc.mapper.ProductMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.reactivecommons.utils.ObjectMapper;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.reactive.TransactionalOperator;
 import reactor.core.publisher.Mono;
