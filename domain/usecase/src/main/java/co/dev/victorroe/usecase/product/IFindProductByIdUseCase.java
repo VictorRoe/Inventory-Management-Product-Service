@@ -1,0 +1,8 @@
+package co.dev.victorroe.usecase.product;
+
+import co.dev.victorroe.model.product.Product;
+import reactor.core.publisher.Mono;
+
+public interface IFindProductByIdUseCase {
+    Mono<Product> findById(Long id);
+}

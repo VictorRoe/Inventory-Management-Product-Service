@@ -2,7 +2,8 @@ package co.dev.victorroe.api;
 
 import co.dev.victorroe.api.dto.RequestProductDTO;
 import co.dev.victorroe.api.mapper.ProductDTOMapper;
-import co.dev.victorroe.usecase.product.ProductUseCase;
+import co.dev.victorroe.usecase.product.CreateProductUseCase;
+import co.dev.victorroe.usecase.product.FindProductByIdUseCase;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -19,14 +20,15 @@ import java.util.Map;
 @Slf4j
 public class Handler {
 
-    private final ProductUseCase productUseCase;
+    private final CreateProductUseCase repositoryCreate;
+    private final FindProductByIdUseCase repositoryFindById;
     private final ProductDTOMapper mapper;
 
     public Mono<ServerResponse> createProduct(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(RequestProductDTO.class)
                 .doOnNext(dto -> log.info("[createProduct] Creando producto: {}", dto))
                 .map(mapper::toRequest)
-                .flatMap(productUseCase::create)
+                .flatMap(repositoryCreate::create)
                 .doOnSuccess(saved -> log.info("[createProduct] Producto creado exitosamente: {}", saved))
                 .map(mapper::toResponse)
                 .flatMap(dto -> ServerResponse.status(HttpStatus.CREATED)
@@ -45,8 +47,9 @@ public class Handler {
 
     public Mono<ServerResponse> findProductById(ServerRequest serverRequest) {
         Long id = Long.parseLong(serverRequest.pathVariable("id"));
-        return productUseCase.findById(id)
-                .doOnNext(product -> log.info("[findProductById] Producto encontrado: {}", product))
+        return repositoryFindById.findById(id)
+                .doOnNext(product -> log.info("[findProductById]Buscando producto con ID: {}", product.getId()))
+                .doOnSuccess(product -> log.info("[findProductById] Se ha encontrado el producto con ID: {}", product.getId()))
                 .map(mapper::toResponse)
                 .flatMap(dto -> ServerResponse.ok()
                         .contentType(MediaType.APPLICATION_JSON)
@@ -54,6 +57,6 @@ public class Handler {
                 .switchIfEmpty(ServerResponse.notFound().build())
                 .onErrorResume(error -> ServerResponse.badRequest()
                         .contentType(MediaType.APPLICATION_JSON).build())
-                .doOnError(err -> log.error("Producto no encontrado: {} ", err.getMessage()));
+                .doOnError(err -> log.error("[findProductById] Producto no encontrado: {} ", err.getMessage()));
     }
 }
