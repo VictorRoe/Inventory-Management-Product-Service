@@ -8,6 +8,7 @@ public record RequestProductDTO(
         BigDecimal price,
         Long stock,
         String sku,
-        Long category_id
+        Long category_id,
+        Long supplier_id
 ) {
 }

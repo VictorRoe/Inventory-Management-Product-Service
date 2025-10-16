@@ -7,11 +7,11 @@ import org.springframework.data.relational.core.mapping.Table;
 
 import java.math.BigDecimal;
 
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-@Data
-@Table(name = "product")
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    @Data
+    @Table(name = "product")
 public class ProductEntity {
 
     @Id
@@ -28,5 +28,7 @@ public class ProductEntity {
     private String sku;
     @Column("category_id")
     private Long categoryId;
+    @Column("supplier_id")
+    private Long supplierId;
 
 }

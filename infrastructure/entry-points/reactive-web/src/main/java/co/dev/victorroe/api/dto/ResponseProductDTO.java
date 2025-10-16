@@ -1,6 +1,7 @@
 package co.dev.victorroe.api.dto;
 
 import co.dev.victorroe.api.dto.category.CategoryDTO;
+import co.dev.victorroe.api.dto.supplier.SupplierDTO;
 
 import java.math.BigDecimal;
 
@@ -11,6 +12,7 @@ public record ResponseProductDTO(
         BigDecimal price,
         Long stock,
         String sku,
-        CategoryDTO category
+        CategoryDTO category,
+        SupplierDTO supplier
 ) {
 }
