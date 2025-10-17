@@ -7,7 +7,10 @@ import co.dev.victorroe.r2dbc.helper.ReactiveAdapterOperations;
 import co.dev.victorroe.r2dbc.mapper.SupplierMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.util.Collection;
 
 @Slf4j
 @Repository
@@ -18,8 +21,11 @@ public class SupplierReactiveRepositoryAdapter extends ReactiveAdapterOperations
         SupplierReactiveRepository
         > implements SupplierRepository {
 
+    private final SupplierMapper mapper;
+
     public SupplierReactiveRepositoryAdapter(SupplierReactiveRepository repository, SupplierMapper mapper) {
         super(repository, mapper::toEntity, mapper::toDomain);
+        this.mapper = mapper;
     }
 
     @Override
@@ -34,5 +40,10 @@ public class SupplierReactiveRepositoryAdapter extends ReactiveAdapterOperations
                     }
                 })
                 .doOnError(error -> log.error("Ocurrio un error al buscar la proovedor"));
+    }
+
+    @Override
+    public Flux<Supplier> findByIdIn(Collection<Long> ids) {
+        return repository.findAllByIdIn(ids).map(mapper::toDomain);
     }
 }

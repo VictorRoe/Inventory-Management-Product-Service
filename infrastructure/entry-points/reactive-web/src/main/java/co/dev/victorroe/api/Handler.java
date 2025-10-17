@@ -3,6 +3,7 @@ package co.dev.victorroe.api;
 import co.dev.victorroe.api.dto.RequestProductDTO;
 import co.dev.victorroe.api.mapper.ProductDTOMapper;
 import co.dev.victorroe.usecase.product.CreateProductUseCase;
+import co.dev.victorroe.usecase.product.FindAllProductUseCase;
 import co.dev.victorroe.usecase.product.FindProductByIdUseCase;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +23,7 @@ public class Handler {
 
     private final CreateProductUseCase repositoryCreate;
     private final FindProductByIdUseCase repositoryFindById;
+    private final FindAllProductUseCase repositoryFinAllProducts;
     private final ProductDTOMapper mapper;
 
     public Mono<ServerResponse> createProduct(ServerRequest serverRequest) {
@@ -58,5 +60,18 @@ public class Handler {
                 .onErrorResume(error -> ServerResponse.badRequest()
                         .contentType(MediaType.APPLICATION_JSON).build())
                 .doOnError(err -> log.error("[findProductById] Producto no encontrado: {} ", err.getMessage()));
+    }
+
+    public Mono<ServerResponse> findAllProducts(ServerRequest serverRequest) {
+
+        int page = serverRequest.queryParam("page")
+                .map(Integer::parseInt)
+                .orElse(0);
+        final int pageSize = 10;
+        log.info("[finAllProducts] Buscando productos en la pagina: {}", page);
+        return repositoryFinAllProducts.apply(page, pageSize)
+                .flatMap(pageResult -> ServerResponse.ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .bodyValue(pageResult));
     }
 }
