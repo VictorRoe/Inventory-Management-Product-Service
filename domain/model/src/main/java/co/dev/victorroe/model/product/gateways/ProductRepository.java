@@ -12,6 +12,10 @@ public interface ProductRepository {
 
     Mono<Page<Product>> findAll(int page, int size);
 
+    Mono<Product> findBySku(String sku);
+
+    Mono<Page<Product>> findByNameContaining (String name, int page, int size);
+
 
 
 }

@@ -2,9 +2,7 @@ package co.dev.victorroe.api;
 
 import co.dev.victorroe.api.dto.RequestProductDTO;
 import co.dev.victorroe.api.mapper.ProductDTOMapper;
-import co.dev.victorroe.usecase.product.CreateProductUseCase;
-import co.dev.victorroe.usecase.product.FindAllProductUseCase;
-import co.dev.victorroe.usecase.product.FindProductByIdUseCase;
+import co.dev.victorroe.usecase.product.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -24,6 +22,8 @@ public class Handler {
     private final CreateProductUseCase repositoryCreate;
     private final FindProductByIdUseCase repositoryFindById;
     private final FindAllProductUseCase repositoryFinAllProducts;
+    private final SearchUniqueProductUseCase repositorySearchUniqueProduct;
+    private final SearchPaginatedProductsUseCase repositorySearchPaginatedProducts;
     private final ProductDTOMapper mapper;
 
     public Mono<ServerResponse> createProduct(ServerRequest serverRequest) {
@@ -73,5 +73,40 @@ public class Handler {
                 .flatMap(pageResult -> ServerResponse.ok()
                         .contentType(MediaType.APPLICATION_JSON)
                         .bodyValue(pageResult));
+    }
+
+    public Mono<ServerResponse> searchProducts(ServerRequest serverRequest) {
+        final var idOpt = serverRequest.queryParam("id").map(Long::parseLong);
+        final var skuOpt = serverRequest.queryParam("sku");
+        final var nameOpt = serverRequest.queryParam("name");
+
+        if (idOpt.isPresent()) {
+            log.info("[searchProducts] Buscando por ID: {}", idOpt.get());
+            return repositorySearchUniqueProduct.byId(idOpt.get())
+                    .map(mapper::toResponse)
+                    .flatMap(dto -> ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).bodyValue(dto))
+                    .switchIfEmpty(ServerResponse.notFound().build());
+        }
+
+        if (skuOpt.isPresent()) {
+            log.info("[searchProducts] Buscando por SKU: {}", skuOpt.get());
+            return repositorySearchUniqueProduct.bySku(skuOpt.get())
+                    .map(mapper::toResponse)
+                    .flatMap(dto -> ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).bodyValue(dto))
+                    .switchIfEmpty(ServerResponse.notFound().build());
+        }
+
+        if (nameOpt.isPresent()) {
+            final int page = serverRequest.queryParam("page").map(Integer::parseInt).orElse(0);
+            final int pageSize = 10; // Tamaño de página estático
+            log.info("[searchProducts] Buscando por nombre: '{}' en la página: {}", nameOpt.get(), page);
+            return repositorySearchPaginatedProducts.byName(nameOpt.get(), page, pageSize)
+                    .flatMap(pageResult -> ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).bodyValue(pageResult));
+        }
+
+        // Si no se proporciona ningún criterio válido
+        return ServerResponse.badRequest()
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(Map.of("error", "Se requiere un criterio de búsqueda válido (id, sku, o name)."));
     }
 }

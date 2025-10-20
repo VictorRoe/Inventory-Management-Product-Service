@@ -14,6 +14,7 @@ import org.springframework.transaction.reactive.TransactionalOperator;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Repository
@@ -55,6 +56,34 @@ public class ProductReactiveRepositoryAdapter extends ReactiveAdapterOperations<
                         .map(this::toEntity)
                         .collectList()
         ).map(tuple ->{
+            long totalElements = tuple.getT1();
+            List<Product> products = tuple.getT2();
+            int totalPages = (int) Math.ceil((double) totalElements / size);
+
+            return Page.<Product>builder()
+                    .content(products)
+                    .currentPage(page)
+                    .totalElements(totalElements)
+                    .totalPages(totalPages)
+                    .build();
+        });
+    }
+
+    @Override
+    public Mono<Product> findBySku(String sku) {
+        return repository.findBySku(sku).map(this::toEntity);
+    }
+
+    @Override
+    public Mono<Page<Product>> findByNameContaining(String name, int page, int size) {
+        Pageable pageable = PageRequest.of(page,size);
+
+        return Mono.zip(
+                repository.countByNameContainingIgnoreCase(name),
+                repository.findByNameContainingIgnoreCase(name, pageable)
+                        .map(this::toEntity)
+                        .collect(Collectors.toList())
+        ).map(tuple -> {
             long totalElements = tuple.getT1();
             List<Product> products = tuple.getT2();
             int totalPages = (int) Math.ceil((double) totalElements / size);

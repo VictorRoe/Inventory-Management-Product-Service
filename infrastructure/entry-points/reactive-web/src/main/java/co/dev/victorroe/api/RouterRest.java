@@ -14,7 +14,9 @@ public class RouterRest {
     @Bean
     public RouterFunction<ServerResponse> routerFunction(Handler handler) {
         return route(POST("/api/v1/product"), handler::createProduct)
-                .andRoute(GET("/api/v1/product/{id}"), handler::findProductById)
-                .andRoute(GET("/api/v1/product"), handler::findAllProducts);
+                .andRoute(GET("/api/v1/product"), handler::findAllProducts)
+                .andRoute(GET("/api/v1/product/search"), handler::searchProducts)
+                .andRoute(GET("/api/v1/product/{id}"), handler::findProductById);
+
     }
 }
