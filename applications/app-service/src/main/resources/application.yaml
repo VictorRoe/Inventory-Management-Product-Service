@@ -35,3 +35,14 @@ logging:
   level:
     root: INFO
     co.dev.victorroe: DEBUG
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+  packages-to-scan: co.dev.victorroe.api
+  webjars:
+    prefix: /webjars
+

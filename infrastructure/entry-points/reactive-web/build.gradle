@@ -8,4 +8,7 @@ dependencies {
 //    MapStuct Dependencies:
     implementation "org.mapstruct:mapstruct:$mapstructVersion"
     annotationProcessor "org.mapstruct:mapstruct-processor:$mapstructVersion"
+
+//    Swagger / OpenApi
+    implementation "org.springdoc:springdoc-openapi-starter-webflux-ui:$swaggerVersion"
 }
