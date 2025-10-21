@@ -26,6 +26,7 @@ public class Handler {
     private final SearchUniqueProductUseCase repositorySearchUniqueProduct;
     private final SearchPaginatedProductsUseCase repositorySearchPaginatedProducts;
     private final UpdateProductUseCase repositoryUpdateProduct;
+    private final DeleteProductUseCase repositoryDeleteProduct;
     private final ProductDTOMapper mapper;
 
     public Mono<ServerResponse> createProduct(ServerRequest serverRequest) {
@@ -125,5 +126,14 @@ public class Handler {
                         ServerResponse.badRequest()
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .bodyValue(Map.of("error", error.getMessage())));
+    }
+
+    public Mono<ServerResponse> deleteProductById(ServerRequest serverRequest) {
+        final Long id = Long.parseLong(serverRequest.pathVariable("id"));
+        log.info("[deleteProductById] Eliminando producto con id: {}", id);
+
+        return repositoryDeleteProduct.deleteById(id)
+                .then(ServerResponse.noContent().build())
+                .onErrorResume(RuntimeException.class, error -> ServerResponse.notFound().build());
     }
 }

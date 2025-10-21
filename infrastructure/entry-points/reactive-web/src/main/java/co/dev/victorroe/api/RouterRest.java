@@ -90,12 +90,27 @@ public class RouterRest {
                             }
                     )
 
-            )})
+            ),
+            @RouterOperation(
+                    path = "/api/v1/delete/product/{id}",
+                    method = RequestMethod.DELETE,
+                    beanClass = Handler.class, beanMethod = "deleteProduct",
+                    operation = @Operation(operationId = "deleteProduct", summary = "Eliminar un producto", tags = {"Productos"},
+                            parameters = {@Parameter(in = ParameterIn.PATH, name = "id", description = "ID del producto a eliminar", required = true, example = "1")},
+                            responses = {
+                                    @ApiResponse(responseCode = "204", description = "Producto eliminado exitosamente (sin contenido)"),
+                                    @ApiResponse(responseCode = "404", description = "Producto no encontrado")
+                            }
+                    )
+            )
+    })
+
     public RouterFunction<ServerResponse> routerFunction(Handler handler) {
         return route(POST("/api/v1/product"), handler::createProduct)
                 .andRoute(GET("/api/v1/product"), handler::findAllProducts)
                 .andRoute(GET("/api/v1/product/search"), handler::searchProducts)
                 .andRoute(PATCH("/api/v1/product/{id}"), handler::updateProduct)
+                .andRoute(DELETE("/api/v1/delete/product/{id}"), handler::deleteProductById)
                 .andRoute(GET("/api/v1/product/{id}"), handler::findProductById);
     }
 }

@@ -18,6 +18,8 @@ public interface ProductRepository {
 
     Mono<Product> update (Product product);
 
+    Mono<Void> delete (Long id);
+
 
 
 }
