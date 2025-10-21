@@ -1,6 +1,7 @@
 package co.dev.victorroe.api;
 
 import co.dev.victorroe.api.dto.RequestProductDTO;
+import co.dev.victorroe.api.dto.UpdateProductDTO;
 import co.dev.victorroe.api.mapper.ProductDTOMapper;
 import co.dev.victorroe.usecase.product.*;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,7 @@ public class Handler {
     private final FindAllProductUseCase repositoryFinAllProducts;
     private final SearchUniqueProductUseCase repositorySearchUniqueProduct;
     private final SearchPaginatedProductsUseCase repositorySearchPaginatedProducts;
+    private final UpdateProductUseCase repositoryUpdateProduct;
     private final ProductDTOMapper mapper;
 
     public Mono<ServerResponse> createProduct(ServerRequest serverRequest) {
@@ -104,9 +106,24 @@ public class Handler {
                     .flatMap(pageResult -> ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).bodyValue(pageResult));
         }
 
-        // Si no se proporciona ningún criterio válido
         return ServerResponse.badRequest()
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(Map.of("error", "Se requiere un criterio de búsqueda válido (id, sku, o name)."));
+    }
+
+    public Mono<ServerResponse> updateProduct(ServerRequest serverRequest) {
+        final Long id = Long.parseLong(serverRequest.pathVariable("id"));
+        log.info("[updateProduct] Actualizando producto con ID: {} ", id);
+
+        return serverRequest.bodyToMono(UpdateProductDTO.class)
+                .flatMap(dto -> repositoryUpdateProduct.update(id, dto.price(), dto.description()))
+                .map(mapper::toResponse)
+                .flatMap(responseDto -> ServerResponse.ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .bodyValue(Map.of("update", "Se ha actualizado de forma exitosa")))
+                .onErrorResume(RuntimeException.class, error ->
+                        ServerResponse.badRequest()
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .bodyValue(Map.of("error", error.getMessage())));
     }
 }

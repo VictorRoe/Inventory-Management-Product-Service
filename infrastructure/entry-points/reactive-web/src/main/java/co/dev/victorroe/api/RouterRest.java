@@ -1,11 +1,11 @@
 package co.dev.victorroe.api;
 
-import static org.springframework.web.reactive.function.server.RequestPredicates.GET;
-import static org.springframework.web.reactive.function.server.RequestPredicates.POST;
+import static org.springframework.web.reactive.function.server.RequestPredicates.*;
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 
 import co.dev.victorroe.api.dto.RequestProductDTO;
 import co.dev.victorroe.api.dto.ResponseProductDTO;
+import co.dev.victorroe.api.dto.UpdateProductDTO;
 import co.dev.victorroe.model.product.Page;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -75,12 +75,27 @@ public class RouterRest {
                                     @ApiResponse(responseCode = "404", description = "Producto no encontrado (para búsqueda por id/sku)")
                             }
                     )
+            ),
+            @RouterOperation(
+                    path = "/api/v1/product/{id}",
+                    method = RequestMethod.PATCH,
+                    beanClass = Handler.class, beanMethod = "updateProduct",
+                    operation = @Operation(operationId = "updateProduct", summary = "Actualizar un producto parcialmente", tags = {"Productos"},
+                            parameters = {@Parameter(in = ParameterIn.PATH, name = "id", description = "ID del producto a actualizar", required = true, example = "1")},
+                            requestBody = @RequestBody(description = "Campos a actualizar", required = true, content = @Content(schema = @Schema(implementation = UpdateProductDTO.class))),
+                            responses = {
+                                    @ApiResponse(responseCode = "200", description = "Producto actualizado exitosamente", content = @Content(schema = @Schema(implementation = ResponseProductDTO.class))),
+                                    @ApiResponse(responseCode = "400", description = "Datos de entrada inválidos"),
+                                    @ApiResponse(responseCode = "404", description = "Producto no encontrado")
+                            }
+                    )
+
             )})
     public RouterFunction<ServerResponse> routerFunction(Handler handler) {
         return route(POST("/api/v1/product"), handler::createProduct)
                 .andRoute(GET("/api/v1/product"), handler::findAllProducts)
                 .andRoute(GET("/api/v1/product/search"), handler::searchProducts)
+                .andRoute(PATCH("/api/v1/product/{id}"), handler::updateProduct)
                 .andRoute(GET("/api/v1/product/{id}"), handler::findProductById);
-
     }
 }

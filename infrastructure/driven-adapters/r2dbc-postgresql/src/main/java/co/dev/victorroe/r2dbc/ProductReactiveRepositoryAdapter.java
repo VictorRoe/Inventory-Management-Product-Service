@@ -96,4 +96,9 @@ public class ProductReactiveRepositoryAdapter extends ReactiveAdapterOperations<
                     .build();
         });
     }
+
+    @Override
+    public Mono<Product> update(Product product) {
+        return save(product).as(transactionalOperator::transactional);
+    }
 }
