@@ -55,7 +55,7 @@ public class ProductReactiveRepositoryAdapter extends ReactiveAdapterOperations<
                 repository.findAllBy(pageable)
                         .map(this::toEntity)
                         .collectList()
-        ).map(tuple ->{
+        ).map(tuple -> {
             long totalElements = tuple.getT1();
             List<Product> products = tuple.getT2();
             int totalPages = (int) Math.ceil((double) totalElements / size);
@@ -76,7 +76,7 @@ public class ProductReactiveRepositoryAdapter extends ReactiveAdapterOperations<
 
     @Override
     public Mono<Page<Product>> findByNameContaining(String name, int page, int size) {
-        Pageable pageable = PageRequest.of(page,size);
+        Pageable pageable = PageRequest.of(page, size);
 
         return Mono.zip(
                 repository.countByNameContainingIgnoreCase(name),
@@ -100,5 +100,10 @@ public class ProductReactiveRepositoryAdapter extends ReactiveAdapterOperations<
     @Override
     public Mono<Product> update(Product product) {
         return save(product).as(transactionalOperator::transactional);
+    }
+
+    @Override
+    public Mono<Void> delete(Long id) {
+        return repository.deleteById(id);
     }
 }
