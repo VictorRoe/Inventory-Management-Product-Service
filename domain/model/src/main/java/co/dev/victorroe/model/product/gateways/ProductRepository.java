@@ -16,6 +16,8 @@ public interface ProductRepository {
 
     Mono<Page<Product>> findByNameContaining (String name, int page, int size);
 
+    Mono<Product> update (Product product);
+
 
 
 }
