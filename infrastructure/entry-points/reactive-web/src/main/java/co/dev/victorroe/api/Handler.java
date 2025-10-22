@@ -1,5 +1,6 @@
 package co.dev.victorroe.api;
 
+import co.dev.victorroe.api.dto.AddStockDTO;
 import co.dev.victorroe.api.dto.RequestProductDTO;
 import co.dev.victorroe.api.dto.UpdateProductDTO;
 import co.dev.victorroe.api.mapper.ProductDTOMapper;
@@ -27,6 +28,7 @@ public class Handler {
     private final SearchPaginatedProductsUseCase repositorySearchPaginatedProducts;
     private final UpdateProductUseCase repositoryUpdateProduct;
     private final DeleteProductUseCase repositoryDeleteProduct;
+    private final AddStockUseCase repositoryAddStock;
     private final ProductDTOMapper mapper;
 
     public Mono<ServerResponse> createProduct(ServerRequest serverRequest) {
@@ -135,5 +137,25 @@ public class Handler {
         return repositoryDeleteProduct.deleteById(id)
                 .then(ServerResponse.noContent().build())
                 .onErrorResume(RuntimeException.class, error -> ServerResponse.notFound().build());
+    }
+
+    public Mono<ServerResponse> addStock(ServerRequest serverRequest){
+        final Long id = Long.parseLong(serverRequest.pathVariable("id"));
+        log.info("[addStock] Agregando stock al producto con ID: {}", id);
+
+        return serverRequest.bodyToMono(AddStockDTO.class)
+                .flatMap(dto -> repositoryAddStock.addStock(id, dto.quantity()))
+                .map(mapper::toResponse)
+                .flatMap(responseDTO -> ServerResponse.ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .bodyValue(Map.of("update", "Se ha agregado la cantidad de producto en stock")))
+                .onErrorResume(IllegalArgumentException.class, error ->
+                        ServerResponse.badRequest()
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .bodyValue(Map.of("bad_request", error.getMessage())))
+                .onErrorResume(RuntimeException.class, error ->
+                        ServerResponse.status(HttpStatus.NOT_FOUND)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .bodyValue(Map.of("not_found", error.getMessage())));
     }
 }
