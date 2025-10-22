@@ -3,6 +3,7 @@ package co.dev.victorroe.api;
 import static org.springframework.web.reactive.function.server.RequestPredicates.*;
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 
+import co.dev.victorroe.api.dto.AddStockDTO;
 import co.dev.victorroe.api.dto.RequestProductDTO;
 import co.dev.victorroe.api.dto.ResponseProductDTO;
 import co.dev.victorroe.api.dto.UpdateProductDTO;
@@ -102,6 +103,20 @@ public class RouterRest {
                                     @ApiResponse(responseCode = "404", description = "Producto no encontrado")
                             }
                     )
+            ),
+            @RouterOperation(
+                    path = "/api/v1/product/{id}/stock",
+                    method = RequestMethod.POST,
+                    beanClass = Handler.class, beanMethod = "addStock",
+                    operation = @Operation(operationId = "addStock", summary = "Registrar una entrada de stock", tags = {"Productos"},
+                            parameters = {@Parameter(in = ParameterIn.PATH, name = "id", description = "ID del producto", required = true, example = "1")},
+                            requestBody = @RequestBody(description = "Cantidad de stock a AÑADIR", required = true, content = @Content(schema = @Schema(implementation = AddStockDTO.class))),
+                            responses = {
+                                    @ApiResponse(responseCode = "200", description = "Stock actualizado exitosamente", content = @Content(schema = @Schema(implementation = ResponseProductDTO.class))),
+                                    @ApiResponse(responseCode = "400", description = "Cantidad inválida (debe ser > 0)"),
+                                    @ApiResponse(responseCode = "404", description = "Producto no encontrado")
+                            }
+                    )
             )
     })
 
@@ -111,6 +126,7 @@ public class RouterRest {
                 .andRoute(GET("/api/v1/product/search"), handler::searchProducts)
                 .andRoute(PATCH("/api/v1/product/{id}"), handler::updateProduct)
                 .andRoute(DELETE("/api/v1/delete/product/{id}"), handler::deleteProductById)
+                .andRoute(POST("/api/v1/product/{id}/stock"), handler::addStock)
                 .andRoute(GET("/api/v1/product/{id}"), handler::findProductById);
     }
 }
