@@ -3,10 +3,7 @@ package co.dev.victorroe.api;
 import static org.springframework.web.reactive.function.server.RequestPredicates.*;
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 
-import co.dev.victorroe.api.dto.AddStockDTO;
-import co.dev.victorroe.api.dto.RequestProductDTO;
-import co.dev.victorroe.api.dto.ResponseProductDTO;
-import co.dev.victorroe.api.dto.UpdateProductDTO;
+import co.dev.victorroe.api.dto.*;
 import co.dev.victorroe.model.product.Page;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -117,6 +114,21 @@ public class RouterRest {
                                     @ApiResponse(responseCode = "404", description = "Producto no encontrado")
                             }
                     )
+            ),
+            @RouterOperation(
+                    path = "/api/v1/product/{id}/stock-exit",
+                    method = RequestMethod.POST,
+                    beanClass = Handler.class, beanMethod = "removeStock",
+                    operation = @Operation(operationId = "removeStock", summary = "Registrar una salida de stock (venta o merma)", tags = {"Productos"},
+                            parameters = {@Parameter(in = ParameterIn.PATH, name = "id", description = "ID del producto", required = true, example = "1")},
+                            requestBody = @RequestBody(description = "Cantidad y tipo de salida de stock", required = true, content = @Content(schema = @Schema(implementation = RemoveStockDTO.class))), // Nuevo DTO
+                            responses = {
+                                    @ApiResponse(responseCode = "200", description = "Stock actualizado exitosamente", content = @Content(schema = @Schema(implementation = ResponseProductDTO.class))),
+                                    @ApiResponse(responseCode = "400", description = "Cantidad inválida (debe ser > 0)"),
+                                    @ApiResponse(responseCode = "404", description = "Producto no encontrado"),
+                                    @ApiResponse(responseCode = "409", description = "Conflicto: Stock insuficiente")
+                            }
+                    )
             )
     })
 
@@ -127,6 +139,7 @@ public class RouterRest {
                 .andRoute(PATCH("/api/v1/product/{id}"), handler::updateProduct)
                 .andRoute(DELETE("/api/v1/delete/product/{id}"), handler::deleteProductById)
                 .andRoute(POST("/api/v1/product/{id}/stock"), handler::addStock)
+                .andRoute(POST("/api/v1/product/{id}/stock-exit"),handler::removeStock)
                 .andRoute(GET("/api/v1/product/{id}"), handler::findProductById);
     }
 }
