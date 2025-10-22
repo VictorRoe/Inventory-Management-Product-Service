@@ -1,10 +1,12 @@
 package co.dev.victorroe.api;
 
 import co.dev.victorroe.api.dto.AddStockDTO;
+import co.dev.victorroe.api.dto.RemoveStockDTO;
 import co.dev.victorroe.api.dto.RequestProductDTO;
 import co.dev.victorroe.api.dto.UpdateProductDTO;
 import co.dev.victorroe.api.mapper.ProductDTOMapper;
 import co.dev.victorroe.usecase.product.*;
+import co.dev.victorroe.usecase.product.exception.InsufficientStockException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -29,6 +31,7 @@ public class Handler {
     private final UpdateProductUseCase repositoryUpdateProduct;
     private final DeleteProductUseCase repositoryDeleteProduct;
     private final AddStockUseCase repositoryAddStock;
+    private final RemoveStockUseCase repositoryRemoveStock;
     private final ProductDTOMapper mapper;
 
     public Mono<ServerResponse> createProduct(ServerRequest serverRequest) {
@@ -139,7 +142,7 @@ public class Handler {
                 .onErrorResume(RuntimeException.class, error -> ServerResponse.notFound().build());
     }
 
-    public Mono<ServerResponse> addStock(ServerRequest serverRequest){
+    public Mono<ServerResponse> addStock(ServerRequest serverRequest) {
         final Long id = Long.parseLong(serverRequest.pathVariable("id"));
         log.info("[addStock] Agregando stock al producto con ID: {}", id);
 
@@ -157,5 +160,42 @@ public class Handler {
                         ServerResponse.status(HttpStatus.NOT_FOUND)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .bodyValue(Map.of("not_found", error.getMessage())));
+    }
+
+    public Mono<ServerResponse> removeStock(ServerRequest serverRequest) {
+        final Long id = Long.parseLong(serverRequest.pathVariable("id"));
+        log.info("[removeStock] Registrando salida de stock para el producto ID: {}", id);
+
+        return serverRequest.bodyToMono(RemoveStockDTO.class)
+                .flatMap(dto -> {
+                    log.debug("[removeStock] Recibiendo DTO: {}", dto);
+                    return repositoryRemoveStock.removeStock(id, dto.quantity(), dto.type());
+                })
+                .map(mapper::toResponse)
+                .flatMap(responseProductDTO ->
+                        ServerResponse.ok()
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .bodyValue(responseProductDTO)
+                )
+                .onErrorResume(InsufficientStockException.class, error -> {
+                    log.warn("[removeStock] Conflicto de stock para ID {}: {}", id, error.getMessage());
+                    return ServerResponse.status(HttpStatus.CONFLICT)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .bodyValue(Map.of("error 409", error.getMessage()));
+
+                })
+                .onErrorResume(IllegalArgumentException.class, error -> {
+                    log.warn("[removeStock] Argumento invalido para ID: {}, {}", id, error.getMessage());
+                    return ServerResponse.badRequest()
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .bodyValue(Map.of("error 400", error.getMessage()));
+
+                })
+                .onErrorResume(RuntimeException.class, error -> {
+                    log.error("[removeStock] Error buscando producto ID {}: {}", id, error.getMessage());
+                    return ServerResponse.status(HttpStatus.NOT_FOUND)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .bodyValue(Map.of("error 404", error.getMessage()));
+                });
     }
 }
