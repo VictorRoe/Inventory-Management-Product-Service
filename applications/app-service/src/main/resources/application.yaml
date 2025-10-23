@@ -22,27 +22,29 @@ management:
         enabled: true
 adapters:
   r2dbc:
-    host: ${DB_HOST}
+    host: "${DB_HOST}"
     port: 5432
-    database: ${DB_NAME}
-    schema: ${DB_SCHEMA}
-    username: ${DB_USER}
-    password: ${DB_PASSWORD}
+    database: "${DB_NAME}"
+    schema: "${DB_SCHEMA}"
+    username: "${DB_USER}"
+    password: "${DB_PASSWORD}"
 cors:
   allowed-origins: "http://localhost:4200,http://localhost:8080"
-
 logging:
   level:
-    root: INFO
-    co.dev.victorroe: DEBUG
-
+    root: "INFO"
+    co.dev.victorroe: "DEBUG"
 springdoc:
   api-docs:
-    path: /api-docs
+    path: "/api-docs"
   swagger-ui:
     enabled: true
-    path: /swagger-ui.html
-  packages-to-scan: co.dev.victorroe.api
+    path: "/swagger-ui.html"
+  packages-to-scan: "co.dev.victorroe.api"
   webjars:
-    prefix: /webjars
-
+    prefix: "/webjars"
+adapter:
+  sqs:
+    region: "${SQS_REGION}"
+    queueUrl: "${SQS_SENDER}"
+#    endpoint: "http://localhost:4566 # For localstack only"
