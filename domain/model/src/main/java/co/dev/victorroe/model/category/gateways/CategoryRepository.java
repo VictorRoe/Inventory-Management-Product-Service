@@ -10,4 +10,7 @@ public interface CategoryRepository {
 
     Mono<Category> findById(Long id);
     Flux<Category> findByIdIn(Collection<Long> ids);
+    Mono<Category> create (Category category);
+    Mono<Void> delete (Long id);
+    Mono<Category> update (Category category);
 }
