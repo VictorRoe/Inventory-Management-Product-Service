@@ -1,12 +1,12 @@
 package co.dev.victorroe.api;
 
-import co.dev.victorroe.api.dto.AddStockDTO;
-import co.dev.victorroe.api.dto.RemoveStockDTO;
-import co.dev.victorroe.api.dto.RequestProductDTO;
-import co.dev.victorroe.api.dto.UpdateProductDTO;
+import co.dev.victorroe.api.dto.product.AddStockDTO;
+import co.dev.victorroe.api.dto.product.RemoveStockDTO;
+import co.dev.victorroe.api.dto.product.RequestProductDTO;
+import co.dev.victorroe.api.dto.product.UpdateProductDTO;
 import co.dev.victorroe.api.mapper.ProductDTOMapper;
 import co.dev.victorroe.usecase.product.*;
-import co.dev.victorroe.usecase.product.exception.InsufficientStockException;
+import co.dev.victorroe.usecase.exception.InsufficientStockException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -21,7 +21,7 @@ import java.util.Map;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class Handler {
+public class ProductHandler {
 
     private final CreateProductUseCase repositoryCreate;
     private final FindProductByIdUseCase repositoryFindById;
@@ -36,17 +36,17 @@ public class Handler {
 
     public Mono<ServerResponse> createProduct(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(RequestProductDTO.class)
-                .doOnNext(dto -> log.info("[createProduct] Creando producto: {}", dto))
+                .doOnNext(dto -> log.info("[createCategory] Creando producto: {}", dto))
                 .map(mapper::toRequest)
                 .flatMap(repositoryCreate::create)
-                .doOnSuccess(saved -> log.info("[createProduct] Producto creado exitosamente: {}", saved))
+                .doOnSuccess(saved -> log.info("[createCategory] Producto creado exitosamente: {}", saved))
                 .map(mapper::toResponse)
                 .flatMap(dto -> ServerResponse.status(HttpStatus.CREATED)
                         .contentType(MediaType.APPLICATION_JSON)
                         .bodyValue(Map.of("message", "Product created successfully"))
                 )
                 .onErrorResume(IllegalArgumentException.class, error -> {
-                            log.warn("[createProduct] Error de validacion: {}", error.getMessage());
+                            log.warn("[createCategory] Error de validacion: {}", error.getMessage());
                             return ServerResponse.badRequest()
                                     .contentType(MediaType.APPLICATION_JSON)
                                     .bodyValue(Map.of("message", error.getMessage()));

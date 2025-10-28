@@ -3,7 +3,7 @@ package co.dev.victorroe.api;
 import static org.springframework.web.reactive.function.server.RequestPredicates.*;
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 
-import co.dev.victorroe.api.dto.*;
+import co.dev.victorroe.api.dto.product.*;
 import co.dev.victorroe.model.product.Page;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -26,7 +26,7 @@ public class RouterRest {
     @RouterOperations({@RouterOperation(
             path = "/api/v1/product/{id}",
             method = RequestMethod.GET,
-            beanClass = Handler.class, beanMethod = "findProductById",
+            beanClass = ProductHandler.class, beanMethod = "findProductById",
             operation = @Operation(operationId = "findProductById", summary = "Buscar un producto por su ID", tags = {"Productos"},
                     parameters = {@Parameter(in = ParameterIn.PATH, name = "id", description = "ID del producto", required = true, example = "1")},
                     responses = {
@@ -38,8 +38,8 @@ public class RouterRest {
             @RouterOperation(
                     path = "/api/v1/product",
                     method = RequestMethod.POST,
-                    beanClass = Handler.class, beanMethod = "createProduct",
-                    operation = @Operation(operationId = "createProduct", summary = "Crear un nuevo producto", tags = {"Productos"},
+                    beanClass = ProductHandler.class, beanMethod = "createCategory",
+                    operation = @Operation(operationId = "createCategory", summary = "Crear un nuevo producto", tags = {"Productos"},
                             requestBody = @RequestBody(description = "Datos del nuevo producto", required = true, content = @Content(schema = @Schema(implementation = RequestProductDTO.class))),
                             responses = {
                                     @ApiResponse(responseCode = "201", description = "Producto creado exitosamente"),
@@ -50,7 +50,7 @@ public class RouterRest {
             @RouterOperation(
                     path = "/api/v1/product",
                     method = RequestMethod.GET,
-                    beanClass = Handler.class, beanMethod = "findAllProducts",
+                    beanClass = ProductHandler.class, beanMethod = "findAllProducts",
                     operation = @Operation(operationId = "findAllProducts", summary = "Listar todos los productos de forma paginada", tags = {"Productos"},
                             parameters = {@Parameter(in = ParameterIn.QUERY, name = "page", description = "Número de la página a solicitar (empieza en 0)", example = "0")},
                             responses = {@ApiResponse(responseCode = "200", description = "Página de productos", content = @Content(schema = @Schema(implementation = Page.class)))}
@@ -59,7 +59,7 @@ public class RouterRest {
             @RouterOperation(
                     path = "/api/v1/product/search",
                     method = RequestMethod.GET,
-                    beanClass = Handler.class, beanMethod = "searchProducts",
+                    beanClass = ProductHandler.class, beanMethod = "searchProducts",
                     operation = @Operation(operationId = "searchProducts", summary = "Búsqueda flexible de productos", tags = {"Productos"},
                             parameters = {
                                     @Parameter(in = ParameterIn.QUERY, name = "id", description = "Buscar por ID exacto.", example = "1"),
@@ -77,7 +77,7 @@ public class RouterRest {
             @RouterOperation(
                     path = "/api/v1/product/{id}",
                     method = RequestMethod.PATCH,
-                    beanClass = Handler.class, beanMethod = "updateProduct",
+                    beanClass = ProductHandler.class, beanMethod = "updateProduct",
                     operation = @Operation(operationId = "updateProduct", summary = "Actualizar un producto parcialmente", tags = {"Productos"},
                             parameters = {@Parameter(in = ParameterIn.PATH, name = "id", description = "ID del producto a actualizar", required = true, example = "1")},
                             requestBody = @RequestBody(description = "Campos a actualizar", required = true, content = @Content(schema = @Schema(implementation = UpdateProductDTO.class))),
@@ -92,7 +92,7 @@ public class RouterRest {
             @RouterOperation(
                     path = "/api/v1/delete/product/{id}",
                     method = RequestMethod.DELETE,
-                    beanClass = Handler.class, beanMethod = "deleteProduct",
+                    beanClass = ProductHandler.class, beanMethod = "deleteProduct",
                     operation = @Operation(operationId = "deleteProduct", summary = "Eliminar un producto", tags = {"Productos"},
                             parameters = {@Parameter(in = ParameterIn.PATH, name = "id", description = "ID del producto a eliminar", required = true, example = "1")},
                             responses = {
@@ -104,7 +104,7 @@ public class RouterRest {
             @RouterOperation(
                     path = "/api/v1/product/{id}/stock",
                     method = RequestMethod.POST,
-                    beanClass = Handler.class, beanMethod = "addStock",
+                    beanClass = ProductHandler.class, beanMethod = "addStock",
                     operation = @Operation(operationId = "addStock", summary = "Registrar una entrada de stock", tags = {"Productos"},
                             parameters = {@Parameter(in = ParameterIn.PATH, name = "id", description = "ID del producto", required = true, example = "1")},
                             requestBody = @RequestBody(description = "Cantidad de stock a AÑADIR", required = true, content = @Content(schema = @Schema(implementation = AddStockDTO.class))),
@@ -118,7 +118,7 @@ public class RouterRest {
             @RouterOperation(
                     path = "/api/v1/product/{id}/stock-exit",
                     method = RequestMethod.POST,
-                    beanClass = Handler.class, beanMethod = "removeStock",
+                    beanClass = ProductHandler.class, beanMethod = "removeStock",
                     operation = @Operation(operationId = "removeStock", summary = "Registrar una salida de stock (venta o merma)", tags = {"Productos"},
                             parameters = {@Parameter(in = ParameterIn.PATH, name = "id", description = "ID del producto", required = true, example = "1")},
                             requestBody = @RequestBody(description = "Cantidad y tipo de salida de stock", required = true, content = @Content(schema = @Schema(implementation = RemoveStockDTO.class))), // Nuevo DTO
@@ -132,14 +132,16 @@ public class RouterRest {
             )
     })
 
-    public RouterFunction<ServerResponse> routerFunction(Handler handler) {
-        return route(POST("/api/v1/product"), handler::createProduct)
-                .andRoute(GET("/api/v1/product"), handler::findAllProducts)
-                .andRoute(GET("/api/v1/product/search"), handler::searchProducts)
-                .andRoute(PATCH("/api/v1/product/{id}"), handler::updateProduct)
-                .andRoute(DELETE("/api/v1/delete/product/{id}"), handler::deleteProductById)
-                .andRoute(POST("/api/v1/product/{id}/stock"), handler::addStock)
-                .andRoute(POST("/api/v1/product/{id}/stock-exit"),handler::removeStock)
-                .andRoute(GET("/api/v1/product/{id}"), handler::findProductById);
+    public RouterFunction<ServerResponse> routerFunction(ProductHandler productHandler, CategoryHandler categoryHandler) {
+        return route(POST("/api/v1/product"), productHandler::createProduct)
+                .andRoute(GET("/api/v1/product"), productHandler::findAllProducts)
+                .andRoute(GET("/api/v1/product/search"), productHandler::searchProducts)
+                .andRoute(PATCH("/api/v1/product/{id}"), productHandler::updateProduct)
+                .andRoute(DELETE("/api/v1/delete/product/{id}"), productHandler::deleteProductById)
+                .andRoute(POST("/api/v1/product/{id}/stock"), productHandler::addStock)
+                .andRoute(POST("/api/v1/product/{id}/stock-exit"),productHandler::removeStock)
+                .andRoute(GET("/api/v1/product/{id}"), productHandler::findProductById)
+
+                .andRoute(POST("/api/v1/category"), categoryHandler::createCategory);
     }
 }

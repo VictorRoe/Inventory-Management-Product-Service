@@ -8,7 +8,8 @@ import co.dev.victorroe.model.inventorymovement.gateways.InventoryMovementReposi
 import co.dev.victorroe.model.product.Product;
 import co.dev.victorroe.model.product.StockOutputType;
 import co.dev.victorroe.model.product.gateways.ProductRepository;
-import co.dev.victorroe.usecase.product.exception.InsufficientStockException;
+import co.dev.victorroe.usecase.product.contract.IRemoveStockUseCase;
+import co.dev.victorroe.usecase.exception.InsufficientStockException;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;
 

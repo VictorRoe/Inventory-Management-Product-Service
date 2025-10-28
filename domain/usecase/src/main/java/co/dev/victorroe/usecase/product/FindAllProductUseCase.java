@@ -3,6 +3,8 @@ package co.dev.victorroe.usecase.product;
 import co.dev.victorroe.model.product.Page;
 import co.dev.victorroe.model.product.Product;
 import co.dev.victorroe.model.product.gateways.ProductRepository;
+import co.dev.victorroe.usecase.product.contract.IFindAllProductUseCases;
+import co.dev.victorroe.usecase.product.contract.IProductDataEnricherUseCase;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -10,7 +12,7 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 
 @RequiredArgsConstructor
-public class FindAllProductUseCase implements IFindAllProductUseCases{
+public class FindAllProductUseCase implements IFindAllProductUseCases {
 
     private final ProductRepository repository;
     private final List<IProductDataEnricherUseCase> enrichers;

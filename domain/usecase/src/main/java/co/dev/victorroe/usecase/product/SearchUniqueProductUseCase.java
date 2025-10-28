@@ -2,6 +2,8 @@ package co.dev.victorroe.usecase.product;
 
 import co.dev.victorroe.model.product.Product;
 import co.dev.victorroe.model.product.gateways.ProductRepository;
+import co.dev.victorroe.usecase.product.contract.IProductDataEnricherUseCase;
+import co.dev.victorroe.usecase.product.contract.ISearchUniqueProductUseCase;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -9,7 +11,7 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 
 @RequiredArgsConstructor
-public class SearchUniqueProductUseCase implements ISearchUniqueProductUseCase{
+public class SearchUniqueProductUseCase implements ISearchUniqueProductUseCase {
 
     private final ProductRepository repository;
     private final List<IProductDataEnricherUseCase> enrichers;

@@ -1,4 +1,4 @@
-package co.dev.victorroe.usecase.product;
+package co.dev.victorroe.usecase.product.contract;
 
 import reactor.core.publisher.Mono;
 

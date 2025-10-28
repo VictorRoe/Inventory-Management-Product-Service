@@ -4,6 +4,7 @@ import co.dev.victorroe.model.inventorymovement.InventoryMovement;
 import co.dev.victorroe.model.inventorymovement.TransactionType;
 import co.dev.victorroe.model.inventorymovement.gateways.InventoryMovementRepository;
 import co.dev.victorroe.model.product.gateways.ProductRepository;
+import co.dev.victorroe.usecase.product.contract.IDeleteProductUseCase;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;
 
@@ -11,7 +12,7 @@ import java.time.LocalDateTime;
 import java.util.logging.Logger;
 
 @RequiredArgsConstructor
-public class DeleteProductUseCase implements IDeleteProductUseCase{
+public class DeleteProductUseCase implements IDeleteProductUseCase {
 
     private final ProductRepository repository;
     private final InventoryMovementRepository movementRepository;
