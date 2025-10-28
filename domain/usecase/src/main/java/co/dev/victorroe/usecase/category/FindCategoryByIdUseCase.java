@@ -9,10 +9,10 @@ import reactor.core.publisher.Mono;
 import java.util.logging.Logger;
 
 @RequiredArgsConstructor
-public class FindCategoryById implements IFindCategoryByIdUseCase {
+public class FindCategoryByIdUseCase implements IFindCategoryByIdUseCase {
 
     private final CategoryRepository repository;
-    private final Logger log = Logger.getLogger(FindCategoryById.class.getName());
+    private final Logger log = Logger.getLogger(FindCategoryByIdUseCase.class.getName());
 
     @Override
     public Mono<Category> findCategoryById(Long id) {
