@@ -36,17 +36,17 @@ public class ProductHandler {
 
     public Mono<ServerResponse> createProduct(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(RequestProductDTO.class)
-                .doOnNext(dto -> log.info("[createCategory] Creando producto: {}", dto))
+                .doOnNext(dto -> log.info("[createProduct] Creando producto: {}", dto))
                 .map(mapper::toRequest)
                 .flatMap(repositoryCreate::create)
-                .doOnSuccess(saved -> log.info("[createCategory] Producto creado exitosamente: {}", saved))
+                .doOnSuccess(saved -> log.info("[createProduct] Producto creado exitosamente: {}", saved))
                 .map(mapper::toResponse)
                 .flatMap(dto -> ServerResponse.status(HttpStatus.CREATED)
                         .contentType(MediaType.APPLICATION_JSON)
                         .bodyValue(Map.of("message", "Product created successfully"))
                 )
                 .onErrorResume(IllegalArgumentException.class, error -> {
-                            log.warn("[createCategory] Error de validacion: {}", error.getMessage());
+                            log.warn("[createProduct] Error de validacion: {}", error.getMessage());
                             return ServerResponse.badRequest()
                                     .contentType(MediaType.APPLICATION_JSON)
                                     .bodyValue(Map.of("message", error.getMessage()));

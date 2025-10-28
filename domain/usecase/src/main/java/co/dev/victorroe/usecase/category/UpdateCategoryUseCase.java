@@ -16,7 +16,7 @@ public class UpdateCategoryUseCase implements IUpdateCategoryUseCase {
     private final Logger log = Logger.getLogger(UpdateCategoryUseCase.class.getName());
 
     @Override
-    public Mono<Category> updateCategory(Long id, Optional<String> newName) {
+    public Mono<Category> update(Long id, Optional<String> newName) {
         log.info("Buscando Categoria");
         return repository.findById(id)
                 .switchIfEmpty(Mono.error(new RuntimeException("Categoria no encontrado con ID: " + id)))

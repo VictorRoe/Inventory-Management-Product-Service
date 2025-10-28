@@ -142,6 +142,9 @@ public class RouterRest {
                 .andRoute(POST("/api/v1/product/{id}/stock-exit"),productHandler::removeStock)
                 .andRoute(GET("/api/v1/product/{id}"), productHandler::findProductById)
 
-                .andRoute(POST("/api/v1/category"), categoryHandler::createCategory);
+                .andRoute(POST("/api/v1/category"), categoryHandler::createCategory)
+                .andRoute(PATCH("/api/v1/update/category/{id}"), categoryHandler::updateCategory)
+                .andRoute(DELETE("/api/v1/delete/category/{id}"), categoryHandler::deleteCategoryById)
+                .andRoute(GET("/api/v1/category/{id}"), categoryHandler::findCategoryById);
     }
 }
