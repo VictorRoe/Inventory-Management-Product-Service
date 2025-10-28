@@ -7,6 +7,7 @@ import co.dev.victorroe.r2dbc.helper.ReactiveAdapterOperations;
 import co.dev.victorroe.r2dbc.mapper.CategoryMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.reactive.TransactionalOperator;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -23,10 +24,12 @@ public class CategoryReactiveRepositoryAdapter extends ReactiveAdapterOperations
         > implements CategoryRepository {
 
     private final CategoryMapper mapper;
+    private final TransactionalOperator transactionalOperator;
 
-    public CategoryReactiveRepositoryAdapter(CategoryReactiveRepository repository, CategoryMapper mapper) {
+    public CategoryReactiveRepositoryAdapter(CategoryReactiveRepository repository, CategoryMapper mapper, TransactionalOperator transactionalOperator) {
         super(repository, mapper::toEntity, mapper::toDomain);
         this.mapper = mapper;
+        this.transactionalOperator = transactionalOperator;
     }
 
     @Override
@@ -46,6 +49,21 @@ public class CategoryReactiveRepositoryAdapter extends ReactiveAdapterOperations
     @Override
     public Flux<Category> findByIdIn(Collection<Long> ids) {
         return repository.findAllByIdIn(ids).map(mapper::toDomain);
+    }
+
+    @Override
+    public Mono<Category> create(Category category) {
+        return save(category).as(transactionalOperator::transactional);
+    }
+
+    @Override
+    public Mono<Void> delete(Long id) {
+        return repository.deleteById(id);
+    }
+
+    @Override
+    public Mono<Category> update(Category category) {
+        return save(category).as(transactionalOperator::transactional);
     }
 
 

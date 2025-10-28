@@ -2,6 +2,8 @@ package co.dev.victorroe.usecase.product;
 
 import co.dev.victorroe.model.product.Product;
 import co.dev.victorroe.model.product.gateways.ProductRepository;
+import co.dev.victorroe.usecase.product.contract.IFindProductByIdUseCase;
+import co.dev.victorroe.usecase.product.contract.IProductDataEnricherUseCase;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;

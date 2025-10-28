@@ -3,6 +3,7 @@ package co.dev.victorroe.usecase.product;
 import co.dev.victorroe.model.category.Category;
 import co.dev.victorroe.model.category.gateways.CategoryRepository;
 import co.dev.victorroe.model.product.Product;
+import co.dev.victorroe.usecase.product.contract.IProductDataEnricherUseCase;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;
 

@@ -3,6 +3,8 @@ package co.dev.victorroe.usecase.product;
 import co.dev.victorroe.model.product.Page;
 import co.dev.victorroe.model.product.Product;
 import co.dev.victorroe.model.product.gateways.ProductRepository;
+import co.dev.victorroe.usecase.product.contract.IProductDataEnricherUseCase;
+import co.dev.victorroe.usecase.product.contract.ISearchPaginatedProductsUseCase;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;

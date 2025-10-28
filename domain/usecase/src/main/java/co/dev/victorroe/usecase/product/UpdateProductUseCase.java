@@ -5,6 +5,7 @@ import co.dev.victorroe.model.inventorymovement.TransactionType;
 import co.dev.victorroe.model.inventorymovement.gateways.InventoryMovementRepository;
 import co.dev.victorroe.model.product.Product;
 import co.dev.victorroe.model.product.gateways.ProductRepository;
+import co.dev.victorroe.usecase.product.contract.IUpdateProductUseCase;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;
 
