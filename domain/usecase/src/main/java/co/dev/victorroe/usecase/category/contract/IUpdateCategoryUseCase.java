@@ -7,5 +7,5 @@ import java.util.Optional;
 
 public interface IUpdateCategoryUseCase {
 
-    Mono<Category> updateCategory (Long id, Optional<String> newName);
+    Mono<Category> update (Long id, Optional<String> newName);
 }
