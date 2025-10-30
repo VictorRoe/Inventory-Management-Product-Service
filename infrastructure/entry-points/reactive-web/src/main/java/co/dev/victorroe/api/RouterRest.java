@@ -132,7 +132,7 @@ public class RouterRest {
             )
     })
 
-    public RouterFunction<ServerResponse> routerFunction(ProductHandler productHandler, CategoryHandler categoryHandler) {
+    public RouterFunction<ServerResponse> routerFunction(ProductHandler productHandler, CategoryHandler categoryHandler, SupplierHandler supplierHandler) {
         return route(POST("/api/v1/product"), productHandler::createProduct)
                 .andRoute(GET("/api/v1/product"), productHandler::findAllProducts)
                 .andRoute(GET("/api/v1/product/search"), productHandler::searchProducts)
@@ -145,6 +145,13 @@ public class RouterRest {
                 .andRoute(POST("/api/v1/category"), categoryHandler::createCategory)
                 .andRoute(PATCH("/api/v1/update/category/{id}"), categoryHandler::updateCategory)
                 .andRoute(DELETE("/api/v1/delete/category/{id}"), categoryHandler::deleteCategoryById)
-                .andRoute(GET("/api/v1/category/{id}"), categoryHandler::findCategoryById);
+                .andRoute(GET("/api/v1/category/{id}"), categoryHandler::findCategoryById)
+
+                .andRoute(POST("/api/v1/supplier"), supplierHandler::createSupplier)
+                .andRoute(PATCH("/api/v1/update/supplier/{id}"), supplierHandler::updateSupplier)
+                .andRoute(DELETE("/api/v1/delete/supplier/{id}"), supplierHandler::deleteSupplierById)
+                .andRoute(GET("/api/v1/supplier/{id}"), supplierHandler::findSupplierById);
+
+
     }
 }

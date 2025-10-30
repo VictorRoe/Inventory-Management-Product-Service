@@ -7,6 +7,7 @@ import co.dev.victorroe.r2dbc.helper.ReactiveAdapterOperations;
 import co.dev.victorroe.r2dbc.mapper.SupplierMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.reactive.TransactionalOperator;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -22,10 +23,12 @@ public class SupplierReactiveRepositoryAdapter extends ReactiveAdapterOperations
         > implements SupplierRepository {
 
     private final SupplierMapper mapper;
+    private final TransactionalOperator transactionalOperator;
 
-    public SupplierReactiveRepositoryAdapter(SupplierReactiveRepository repository, SupplierMapper mapper) {
+    public SupplierReactiveRepositoryAdapter(SupplierReactiveRepository repository, SupplierMapper mapper, TransactionalOperator transactionalOperator) {
         super(repository, mapper::toEntity, mapper::toDomain);
         this.mapper = mapper;
+        this.transactionalOperator = transactionalOperator;
     }
 
     @Override
@@ -45,5 +48,20 @@ public class SupplierReactiveRepositoryAdapter extends ReactiveAdapterOperations
     @Override
     public Flux<Supplier> findByIdIn(Collection<Long> ids) {
         return repository.findAllByIdIn(ids).map(mapper::toDomain);
+    }
+
+    @Override
+    public Mono<Supplier> create(Supplier supplier) {
+        return save(supplier).as(transactionalOperator::transactional);
+    }
+
+    @Override
+    public Mono<Void> delete(Long id) {
+        return repository.deleteById(id).as(transactionalOperator::transactional);
+    }
+
+    @Override
+    public Mono<Supplier> update(Supplier supplier) {
+        return save(supplier).as(transactionalOperator::transactional);
     }
 }
