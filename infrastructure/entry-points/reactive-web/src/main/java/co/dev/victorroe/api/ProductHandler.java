@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -34,6 +35,7 @@ public class ProductHandler {
     private final RemoveStockUseCase repositoryRemoveStock;
     private final ProductDTOMapper mapper;
 
+    @PreAuthorize("hasAuthority('MANAGER')")
     public Mono<ServerResponse> createProduct(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(RequestProductDTO.class)
                 .doOnNext(dto -> log.info("[createProduct] Creando producto: {}", dto))
@@ -117,6 +119,7 @@ public class ProductHandler {
                 .bodyValue(Map.of("error", "Se requiere un criterio de búsqueda válido (id, sku, o name)."));
     }
 
+    @PreAuthorize("hasAuthority('MANAGER')")
     public Mono<ServerResponse> updateProduct(ServerRequest serverRequest) {
         final Long id = Long.parseLong(serverRequest.pathVariable("id"));
         log.info("[updateProduct] Actualizando producto con ID: {} ", id);
@@ -132,7 +135,7 @@ public class ProductHandler {
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .bodyValue(Map.of("error", error.getMessage())));
     }
-
+    @PreAuthorize("hasAuthority('ADMIN')")
     public Mono<ServerResponse> deleteProductById(ServerRequest serverRequest) {
         final Long id = Long.parseLong(serverRequest.pathVariable("id"));
         log.info("[deleteProductById] Eliminando producto con id: {}", id);
@@ -141,7 +144,7 @@ public class ProductHandler {
                 .then(ServerResponse.noContent().build())
                 .onErrorResume(RuntimeException.class, error -> ServerResponse.notFound().build());
     }
-
+    @PreAuthorize("hasAuthority('MANAGER')")
     public Mono<ServerResponse> addStock(ServerRequest serverRequest) {
         final Long id = Long.parseLong(serverRequest.pathVariable("id"));
         log.info("[addStock] Agregando stock al producto con ID: {}", id);
@@ -161,7 +164,7 @@ public class ProductHandler {
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .bodyValue(Map.of("not_found", error.getMessage())));
     }
-
+    @PreAuthorize("hasAuthority('ADMIN')")
     public Mono<ServerResponse> removeStock(ServerRequest serverRequest) {
         final Long id = Long.parseLong(serverRequest.pathVariable("id"));
         log.info("[removeStock] Registrando salida de stock para el producto ID: {}", id);
