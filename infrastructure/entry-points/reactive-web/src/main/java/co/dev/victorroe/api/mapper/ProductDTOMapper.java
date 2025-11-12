@@ -1,7 +1,7 @@
 package co.dev.victorroe.api.mapper;
 
-import co.dev.victorroe.api.dto.RequestProductDTO;
-import co.dev.victorroe.api.dto.ResponseProductDTO;
+import co.dev.victorroe.api.dto.product.RequestProductDTO;
+import co.dev.victorroe.api.dto.product.ResponseProductDTO;
 import co.dev.victorroe.api.dto.category.CategoryDTO;
 import co.dev.victorroe.model.category.Category;
 import co.dev.victorroe.model.product.Product;

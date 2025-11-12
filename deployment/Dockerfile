@@ -4,7 +4,7 @@ COPY --chown=gradle:gradle . .
 RUN sed -i 's/\r$//' ./gradlew
 RUN chmod +x ./gradlew
 # Ejecutamos el build de Gradle para generar el JAR ejecutable.
-# El comando 'build' compila y empaqueta la aplicación. '-x test' se salta los tests para acelerar el build.
+# El comando 'build ' compila y empaqueta la aplicación. '-x test' se salta los tests para acelerar el build.
 RUN ./gradlew build -x test
 FROM eclipse-temurin:21-jre-alpine
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup

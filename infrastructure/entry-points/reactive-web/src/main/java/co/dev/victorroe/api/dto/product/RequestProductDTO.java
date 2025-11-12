@@ -1,4 +1,4 @@
-package co.dev.victorroe.api.dto;
+package co.dev.victorroe.api.dto.product;
 
 import java.math.BigDecimal;
 
