@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -34,6 +35,7 @@ public class ProductHandler {
     private final RemoveStockUseCase repositoryRemoveStock;
     private final ProductDTOMapper mapper;
 
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'MANAGER'")
     public Mono<ServerResponse> createProduct(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(RequestProductDTO.class)
                 .doOnNext(dto -> log.info("[createProduct] Creando producto: {}", dto))
@@ -54,7 +56,7 @@ public class ProductHandler {
                 );
 
     }
-
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'MANAGER', 'USER')")
     public Mono<ServerResponse> findProductById(ServerRequest serverRequest) {
         Long id = Long.parseLong(serverRequest.pathVariable("id"));
         return repositoryFindById.findById(id)
@@ -70,6 +72,7 @@ public class ProductHandler {
                 .doOnError(err -> log.error("[findProductById] Producto no encontrado: {} ", err.getMessage()));
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'MANAGER', 'USER')")
     public Mono<ServerResponse> findAllProducts(ServerRequest serverRequest) {
 
         int page = serverRequest.queryParam("page")
@@ -83,6 +86,7 @@ public class ProductHandler {
                         .bodyValue(pageResult));
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'MANAGER', 'USER')")
     public Mono<ServerResponse> searchProducts(ServerRequest serverRequest) {
         final var idOpt = serverRequest.queryParam("id").map(Long::parseLong);
         final var skuOpt = serverRequest.queryParam("sku");
@@ -117,6 +121,7 @@ public class ProductHandler {
                 .bodyValue(Map.of("error", "Se requiere un criterio de búsqueda válido (id, sku, o name)."));
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'MANAGER')")
     public Mono<ServerResponse> updateProduct(ServerRequest serverRequest) {
         final Long id = Long.parseLong(serverRequest.pathVariable("id"));
         log.info("[updateProduct] Actualizando producto con ID: {} ", id);
@@ -133,6 +138,7 @@ public class ProductHandler {
                                 .bodyValue(Map.of("error", error.getMessage())));
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     public Mono<ServerResponse> deleteProductById(ServerRequest serverRequest) {
         final Long id = Long.parseLong(serverRequest.pathVariable("id"));
         log.info("[deleteProductById] Eliminando producto con id: {}", id);
@@ -142,6 +148,7 @@ public class ProductHandler {
                 .onErrorResume(RuntimeException.class, error -> ServerResponse.notFound().build());
     }
 
+    @PreAuthorize("hasAuthority('MANAGER')")
     public Mono<ServerResponse> addStock(ServerRequest serverRequest) {
         final Long id = Long.parseLong(serverRequest.pathVariable("id"));
         log.info("[addStock] Agregando stock al producto con ID: {}", id);
@@ -162,6 +169,7 @@ public class ProductHandler {
                                 .bodyValue(Map.of("not_found", error.getMessage())));
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     public Mono<ServerResponse> removeStock(ServerRequest serverRequest) {
         final Long id = Long.parseLong(serverRequest.pathVariable("id"));
         log.info("[removeStock] Registrando salida de stock para el producto ID: {}", id);

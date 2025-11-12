@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -29,6 +30,7 @@ public class CategoryHandler {
     private final DeleteCategoryUseCase repositoryDeleteCategory;
     private final CategoryDTOMapper mapper;
 
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'MANAGER')")
     public Mono<ServerResponse> createCategory (ServerRequest serverRequest){
         return serverRequest.bodyToMono(RequestCategoryDTO.class)
                 .doOnNext(dto -> log.info("[createCategory] creando categoria: {}", dto))
@@ -48,6 +50,7 @@ public class CategoryHandler {
                 });
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'MANAGER')")
     public Mono<ServerResponse> findCategoryById(ServerRequest serverRequest){
         Long id = Long.parseLong(serverRequest.pathVariable("id"));
         return repositoryFindCategoryById.findCategoryById(id)
@@ -63,6 +66,7 @@ public class CategoryHandler {
                 .doOnError(err -> log.error("[findCategoryById] Categoria no encontrado: {}", err.getMessage()));
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'MANAGER')")
     public Mono<ServerResponse> updateCategory (ServerRequest serverRequest){
         final Long id = Long.parseLong(serverRequest.pathVariable("id"));
         log.info("[updateCategory] Actualizando producto con ID: {}", id);
@@ -79,6 +83,7 @@ public class CategoryHandler {
                                 .bodyValue(Map.of("update", "Hubo un error al actualizar categoria")));
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'MANAGER')")
     public Mono<ServerResponse> deleteCategoryById (ServerRequest serverRequest) {
         final Long id = Long.parseLong(serverRequest.pathVariable("id"));
         log.info("[deleteCategoryById] Eliminando Categoria con ID: {}", id);
