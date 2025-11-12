@@ -1,0 +1,703 @@
+{
+	"info": {
+		"_postman_id": "6a64206d-38fa-429d-a6bb-a38c159802d5",
+		"name": "System Inventory Management",
+		"description": "Esto es una Coleccion de todos los Endpoints de los Microservicios de : Productos, Autenticacion y Reportes.\n\nPara hacer consulta de cada endpoint, tienes que registrarte y Logearte para obtener el token ( Automaticamente sera asignado en cada request, no es necesario de llenarlo de forma manual )",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "21712912"
+	},
+	"item": [
+		{
+			"name": "Product Services",
+			"item": [
+				{
+					"name": "Product",
+					"item": [
+						{
+							"name": "DELETE Products",
+							"item": [
+								{
+									"name": "DELETE deleteProductById",
+									"request": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{url_product}}/api/v1/delete/product/123",
+											"host": [
+												"{{url_product}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"delete",
+												"product",
+												"123"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "PATCH Products",
+							"item": [
+								{
+									"name": "PATCH updateProduct",
+									"request": {
+										"method": "PATCH",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"price\": 120000,\r\n    \"description\": \"Esto es un cuaderno\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{url_product}}/api/v1/product/100",
+											"host": [
+												"{{url_product}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"product",
+												"100"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "POST Products",
+							"item": [
+								{
+									"name": "POST createProduct",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"name\": \"iPhone\",\r\n    \"description\": \"This is the latest iPhone by 2026\",\r\n    \"price\": 1200.99,\r\n    \"stock\": 200,\r\n    \"sku\": \"ASerka983\",\r\n    \"category_id\": 1,\r\n    \"supplier_id\": 1\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{url_product}}/api/v1/product",
+											"host": [
+												"{{url_product}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"product"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "POST addStock",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"quantity\": 20000\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{url_product}}/api/v1/product/10/stock",
+											"host": [
+												"{{url_product}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"product",
+												"10",
+												"stock"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "POST removeStock",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"quantity\": 60,\r\n    \"type\": \"WASTE\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{url_product}}/api/v1/product/10/stock-exit",
+											"host": [
+												"{{url_product}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"product",
+												"10",
+												"stock-exit"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "GET Products",
+							"item": [
+								{
+									"name": "GET findProductById",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{url_product}}/api/v1/product/5",
+											"host": [
+												"{{url_product}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"product",
+												"5"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "GET findAllProduct",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{url_product}}/api/v1/product?page=0",
+											"host": [
+												"{{url_product}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"product"
+											],
+											"query": [
+												{
+													"key": "page",
+													"value": "0"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "GET searchProduct",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{url_product}}/api/v1/product/search?id=20",
+											"host": [
+												"{{url_product}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"product",
+												"search"
+											],
+											"query": [
+												{
+													"key": "id",
+													"value": "20"
+												},
+												{
+													"key": "name",
+													"value": "",
+													"disabled": true
+												},
+												{
+													"key": "sku",
+													"value": "",
+													"disabled": true
+												}
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						}
+					],
+					"auth": {
+						"type": "bearer",
+						"bearer": [
+							{
+								"key": "token",
+								"value": "{{AUTH_TOKEN}}",
+								"type": "string"
+							}
+						]
+					},
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {},
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {},
+								"exec": [
+									""
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Supplier",
+					"item": [
+						{
+							"name": "POST createSupplier",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"victor\",\r\n    \"lastName\": \"rangel\",\r\n    \"address\": \"jardines\",\r\n    \"company\": \"texme\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url_product}}/api/v1/supplier",
+									"host": [
+										"{{url_product}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"supplier"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "PATCH updateSupplier",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"victor\",\r\n    \"lastName\": \"rangel\",\r\n    \"address\": \"jardines\",\r\n    \"company\": \"texme2\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url_product}}/api/v1/update/supplier/42",
+									"host": [
+										"{{url_product}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"update",
+										"supplier",
+										"42"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "DELETE deleteSupplierById",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{url_product}}/api/v1/delete/supplier/42",
+									"host": [
+										"{{url_product}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"delete",
+										"supplier",
+										"42"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET findSupplierById",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url_product}}/api/v1/supplier/41",
+									"host": [
+										"{{url_product}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"supplier",
+										"41"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Category",
+					"item": [
+						{
+							"name": "POST createCategory",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"test\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url_product}}/api/v1/category",
+									"host": [
+										"{{url_product}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"category"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "PATCH updateCategory",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"test update\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url_product}}/api/v1/update/category/15",
+									"host": [
+										"{{url_product}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"update",
+										"category",
+										"15"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "DELETE deleteCategoryById",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{url_product}}/api/v1/delete/category/13",
+									"host": [
+										"{{url_product}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"delete",
+										"category",
+										"13"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET findCategoryById",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url_product}}/api/v1/category/1",
+									"host": [
+										"{{url_product}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"category",
+										"1"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{AUTH_TOKEN}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {},
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {},
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Report Services",
+			"item": [
+				{
+					"name": "GET report",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url_report}}/api/v1/report/10",
+							"host": [
+								"{{url_report}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"report",
+								"10"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Auth Services",
+			"item": [
+				{
+					"name": "POST register",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Victor Hugo\",\r\n    \"email\": \"hugo2@email.com\",\r\n    \"password\": \"123456\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url_auth}}/auth/register",
+							"host": [
+								"{{url_auth}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// 1. Parsea (convierte) la respuesta JSON en un objeto\r",
+									"var jsonData = pm.response.json();\r",
+									"\r",
+									"// 2. Extrae el token de la respuesta\r",
+									"// (Ajusta \"token\" si tu propiedad se llama diferente, ej: \"access_token\")\r",
+									"var token = jsonData.token;\r",
+									"\r",
+									"// 3. Guarda el token en una variable de ENTORNO\r",
+									"// ¡Asegúrate de tener un Entorno activo seleccionado en Postman!\r",
+									"pm.environment.set(\"AUTH_TOKEN\", token);\r",
+									"\r",
+									"// OPCIONAL: También puedes guardarlo en variables de COLECCIÓN\r",
+									"// pm.collectionVariables.set(\"AUTH_TOKEN\", token);"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"victor@email.com\",\r\n    \"password\": \"123456\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url_auth}}/auth/login",
+							"host": [
+								"{{url_auth}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{AUTH_TOKEN}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "url_product",
+			"value": ""
+		},
+		{
+			"key": "url_auth",
+			"value": ""
+		},
+		{
+			"key": "url_report",
+			"value": ""
+		},
+		{
+			"key": "AUTH_TOKEN",
+			"value": ""
+		}
+	]
+}
