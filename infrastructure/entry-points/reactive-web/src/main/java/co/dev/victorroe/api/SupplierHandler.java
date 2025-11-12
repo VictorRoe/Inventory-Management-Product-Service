@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -30,6 +31,7 @@ public class SupplierHandler {
     private final DeleteSupplierUseCase repositoryDeleteSupplier;
     private final SupplierDTOMapper mapper;
 
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     public Mono<ServerResponse> createSupplier (ServerRequest serverRequest){
         return serverRequest.bodyToMono(RequestSupplierDTO.class)
                 .doOnNext(dto -> log.info("[createSupplier] creando proovedor: {}", dto))
@@ -49,6 +51,7 @@ public class SupplierHandler {
                 });
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'MANAGER', 'USER')")
     public Mono<ServerResponse> findSupplierById(ServerRequest serverRequest){
         Long id = Long.parseLong(serverRequest.pathVariable("id"));
         return repositoryFindSupplierById.findSupplierById(id)
@@ -64,6 +67,7 @@ public class SupplierHandler {
                 .doOnError(err -> log.error("[findSupplierById] Proovedor no encontrado: {}", err.getMessage()));
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'MANAGER')")
     public Mono<ServerResponse> updateSupplier (ServerRequest serverRequest){
         final Long id = Long.parseLong(serverRequest.pathVariable("id"));
         log.info("[updateSupplier] Actualizando proovedor con ID: {}", id);
@@ -80,6 +84,7 @@ public class SupplierHandler {
                                 .bodyValue(Map.of("update", "Hubo un error al actualizar proovedor")));
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     public Mono<ServerResponse> deleteSupplierById (ServerRequest serverRequest) {
         final Long id = Long.parseLong(serverRequest.pathVariable("id"));
         log.info("[deleteSupplierById] Eliminando proovedor con ID: {}", id);
