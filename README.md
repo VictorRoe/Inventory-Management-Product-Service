@@ -11,7 +11,7 @@
   <p align="center">
     Microservicio responsable de la gestión de productos dentro del sistema de Inventario Empresarial.
     <br />
-    <a href="https://github.com/VictorRoe/Inventory-Management-Product-Service"><strong>Explorar documentación »</strong></a>
+    <a href="https://deepwiki.com/VictorRoe/Inventory-Management-Product-Service"><strong>Explorar documentación »</strong></a>
     <br />
     <br />
     <a href="https://github.com/VictorRoe/Inventory-Management-Product-Service/issues/new?labels=bug&template=bug-report---.md">Reportar Bug</a>
